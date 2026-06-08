@@ -145,10 +145,71 @@ h3 {
   color: #536079;
 }
 
+.notification-bell {
+  position: relative;
+  display: inline-grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid #cdd6e5;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.notification-bell__icon {
+  position: relative;
+  width: 17px;
+  height: 18px;
+  border: 2px solid #2457d6;
+  border-bottom: 0;
+  border-radius: 10px 10px 4px 4px;
+}
+
+.notification-bell__icon::before {
+  position: absolute;
+  top: -5px;
+  left: 5px;
+  width: 3px;
+  height: 4px;
+  border-radius: 999px;
+  background: #2457d6;
+  content: "";
+}
+
+.notification-bell__icon::after {
+  position: absolute;
+  right: 3px;
+  bottom: -5px;
+  left: 3px;
+  height: 2px;
+  border-radius: 999px;
+  background: #2457d6;
+  content: "";
+}
+
+.notification-bell__badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  display: grid;
+  min-width: 20px;
+  height: 20px;
+  place-items: center;
+  border-radius: 999px;
+  color: #ffffff;
+  background: #d13f3f;
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
 .content-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
+}
+
+.content-grid--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .hero-card {
@@ -223,6 +284,16 @@ h3 {
 .field__control--textarea {
   min-height: 132px;
   resize: vertical;
+}
+
+.field--compact {
+  min-width: 180px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
 }
 
 .base-button,
@@ -330,6 +401,101 @@ h3 {
   font-weight: 850;
 }
 
+.metric--small {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.section-title-row,
+.data-item,
+.item-heading,
+.item-actions,
+.status-list {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-title-row,
+.data-item {
+  justify-content: space-between;
+}
+
+.data-list {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.data-list--compact {
+  gap: 10px;
+}
+
+.data-item {
+  padding: 14px;
+  border: 1px solid #dde4f0;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.data-item--unread {
+  border-color: #9cb6f5;
+  background: #f6f9ff;
+}
+
+.item-heading {
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: flex-start;
+}
+
+.item-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.status-list {
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.status-pill {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  border-radius: 999px;
+  padding: 5px 10px;
+  color: #536079;
+  background: #eef2f7;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.status-pill--pendiente {
+  color: #8a5a00;
+  background: #fff4d8;
+}
+
+.status-pill--confirmada {
+  color: #126b51;
+  background: #e8f8f3;
+}
+
+.status-pill--cancelada {
+  color: #9a1c1c;
+  background: #fff0f0;
+}
+
+.status-pill--finalizada {
+  color: #2457d6;
+  background: #edf3ff;
+}
+
+.rating-stars {
+  color: #8a5a00;
+  font-weight: 850;
+}
+
 .profile-list {
   display: grid;
   gap: 10px;
@@ -374,14 +540,22 @@ h3 {
   }
 
   .content-grid,
+  .content-grid--two,
   .section-header {
     grid-template-columns: 1fr;
   }
 
   .hero-card,
-  .topbar {
+  .topbar,
+  .section-title-row,
+  .data-item,
+  .item-actions {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
   }
 }
 
