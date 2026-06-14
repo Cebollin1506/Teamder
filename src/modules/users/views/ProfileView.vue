@@ -6,14 +6,25 @@
       <div class="profile-list">
         <p><strong>Correo:</strong> {{ authStore.user?.email || 'Sin correo guardado' }}</p>
         <p><strong>Rol:</strong> {{ authStore.user?.role || 'Estudiante' }}</p>
+        <p>
+          <strong>Promedio:</strong>
+          <span v-if="profile?.rating_total">
+            {{ Number(profile.rating_average).toFixed(1) }} de 5 en {{ profile.rating_total }} evaluaciones.
+          </span>
+          <span v-else>Sin evaluaciones todavia.</span>
+        </p>
       </div>
     </AppCard>
 
     <AppCard>
-      <h3>Datos desde API</h3>
+      <h3>Informacion academica</h3>
       <StatusMessage v-if="loading" message="Cargando perfil..." />
       <StatusMessage :message="error" type="error" />
-      <pre v-if="profile" class="json-preview">{{ profile }}</pre>
+      <div v-if="profile" class="profile-list">
+        <p><strong>Area:</strong> {{ profile.subject || 'Sin area registrada' }}</p>
+        <p><strong>Bio:</strong> {{ profile.bio || 'Sin biografia registrada' }}</p>
+        <p><strong>Cuenta creada:</strong> {{ profile.created_at }}</p>
+      </div>
     </AppCard>
   </main>
 </template>

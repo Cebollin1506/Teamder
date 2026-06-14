@@ -8,6 +8,8 @@ import DashboardView from '@/views/DashboardView.vue'
 import ProfileView from '@/modules/users/views/ProfileView.vue'
 import UsersListView from '@/modules/users/views/UsersListView.vue'
 import TutoringRequestView from '@/modules/tutoring/views/TutoringRequestView.vue'
+import TutoringManageView from '@/modules/tutoring-schedule/views/TutoringManageView.vue'
+import TutoringChatView from '@/modules/tutoring-schedule/views/TutoringChatView.vue'
 import TutoringScheduleView from '@/modules/tutoring-schedule/views/TutoringScheduleView.vue'
 import TutoringRatingsView from '@/modules/tutoring-ratings/views/TutoringRatingsView.vue'
 import NotificationsView from '@/modules/notifications/views/NotificationsView.vue'
@@ -22,7 +24,19 @@ const routes = [
       { path: 'perfil', name: 'profile', component: ProfileView },
       { path: 'usuarios', name: 'users', component: UsersListView },
       { path: 'solicitudes/crear', name: 'create-tutoring-request', component: TutoringRequestView },
-      { path: 'tutorias/agendar', name: 'schedule-tutoring', component: TutoringScheduleView },
+      {
+        path: 'tutorias/agendar',
+        name: 'schedule-tutoring',
+        component: TutoringScheduleView,
+        meta: { role: 'student' }
+      },
+      {
+        path: 'tutorias/administrar',
+        name: 'manage-tutoring',
+        component: TutoringManageView,
+        meta: { role: 'tutor' }
+      },
+      { path: 'tutorias/chat', name: 'tutoring-chat', component: TutoringChatView },
       { path: 'tutorias/calificaciones', name: 'tutoring-ratings', component: TutoringRatingsView },
       { path: 'notificaciones', name: 'notifications', component: NotificationsView }
     ]
@@ -43,15 +57,27 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to) => {
+router.beforeEach(async (to) => {
   const authStore = useAuthStore()
 
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     return { name: 'login', query: { redirect: to.fullPath } }
   }
 
+  if (to.meta.requiresAuth && authStore.isAuthenticated) {
+    try {
+      await authStore.refreshProfile()
+    } catch {
+      return { name: 'login', query: { redirect: to.fullPath } }
+    }
+  }
+
   if (to.meta.guestOnly && authStore.isAuthenticated) {
     return { name: 'dashboard' }
+  }
+
+  if (to.meta.role && authStore.user?.role !== to.meta.role) {
+    return { name: authStore.user?.role === 'tutor' ? 'manage-tutoring' : 'schedule-tutoring' }
   }
 
   return true

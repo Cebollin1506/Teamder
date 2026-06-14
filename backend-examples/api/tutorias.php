@@ -23,25 +23,52 @@ if (!$userId) {
     json_response(["message" => "Token invalido o faltante."], 401);
 }
 
+$userStatement = $pdo->prepare("SELECT id, name, role FROM users WHERE id = :id LIMIT 1");
+$userStatement->execute(["id" => $userId]);
+$authUser = $userStatement->fetch();
+
+if (!$authUser) {
+    json_response(["message" => "Tu sesion ya no coincide con un usuario registrado. Cierra sesion e inicia de nuevo."], 401);
+}
+
 if ($_SERVER["REQUEST_METHOD"] === "GET") {
+    $roleFilter = $authUser["role"] === "tutor"
+        ? "t.tutor_id = :user_id"
+        : "t.alumno_id = :user_id";
+
     $statement = $pdo->prepare("
         SELECT
             t.*,
-            alumno.name AS alumno_name,
-            tutor.name AS tutor_name,
+            CASE
+                WHEN t.estado IN ('finalizado', '') THEN 'finalizada'
+                ELSE t.estado
+            END AS estado,
+            COALESCE(alumno.name, 'Alumno no encontrado') AS alumno_name,
+            COALESCE(tutor.name, 'Tutor no encontrado') AS tutor_name,
             tutor.subject AS tutor_subject
         FROM tutorias t
-        INNER JOIN users alumno ON alumno.id = t.alumno_id
-        INNER JOIN users tutor ON tutor.id = t.tutor_id
-        WHERE t.alumno_id = :user_id OR t.tutor_id = :user_id
+        LEFT JOIN users alumno ON alumno.id = t.alumno_id
+        LEFT JOIN users tutor ON tutor.id = t.tutor_id
+        WHERE {$roleFilter}
         ORDER BY t.fecha DESC, t.hora DESC
     ");
     $statement->execute(["user_id" => $userId]);
 
-    json_response(["tutorias" => $statement->fetchAll()]);
+    json_response([
+        "user" => [
+            "id" => (int) $authUser["id"],
+            "name" => $authUser["name"],
+            "role" => $authUser["role"],
+        ],
+        "tutorias" => $statement->fetchAll(),
+    ]);
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if ($authUser["role"] !== "student") {
+        json_response(["message" => "Solo los alumnos pueden agendar tutorias."], 403);
+    }
+
     $input = json_input();
     $tutorId = (int) ($input["tutor_id"] ?? 0);
     $tema = trim($input["tema"] ?? "");

@@ -6,7 +6,9 @@
         <RouterLink to="/">Dashboard</RouterLink>
         <RouterLink to="/usuarios">Usuarios</RouterLink>
         <RouterLink to="/solicitudes/crear">Solicitud</RouterLink>
-        <RouterLink to="/tutorias/agendar">Agendar tutoria</RouterLink>
+        <RouterLink v-if="isStudent" to="/tutorias/agendar">Agendar tutoria</RouterLink>
+        <RouterLink v-if="isTutor" to="/tutorias/administrar">Administrar tutorias</RouterLink>
+        <RouterLink to="/tutorias/chat">Chat</RouterLink>
         <RouterLink to="/tutorias/calificaciones">Calificaciones</RouterLink>
         <RouterLink to="/perfil">Perfil</RouterLink>
       </nav>
@@ -47,11 +49,16 @@ const titles = {
   profile: 'Perfil',
   'create-tutoring-request': 'Crear solicitud',
   'schedule-tutoring': 'Agendar tutoria',
+  'manage-tutoring': 'Administrar tutorias',
+  'tutoring-chat': 'Chat de tutoria',
   'tutoring-ratings': 'Calificaciones de tutoria',
   notifications: 'Notificaciones'
 }
 
 const pageTitle = computed(() => titles[route.name] || 'TEAMDER')
+const userRole = computed(() => String(authStore.user?.role || '').toLowerCase().trim())
+const isTutor = computed(() => userRole.value === 'tutor')
+const isStudent = computed(() => userRole.value !== 'tutor')
 
 function logout() {
   authStore.logout()

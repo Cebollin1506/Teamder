@@ -438,6 +438,119 @@ h3 {
   background: #ffffff;
 }
 
+.data-item--stacked,
+.details-grid,
+.rating-panel {
+  display: grid;
+  gap: 12px;
+}
+
+.details-grid {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  color: #39445a;
+}
+
+.details-grid p {
+  line-height: 1.5;
+}
+
+.rating-panel {
+  padding: 12px;
+  border: 1px solid #dde4f0;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.chat-panel {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid #d8e1ee;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.chat-layout {
+  grid-template-columns: minmax(260px, 360px) minmax(0, 1fr);
+  align-items: start;
+}
+
+.chat-detail {
+  display: grid;
+  gap: 18px;
+}
+
+.chat-thread {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid #dde4f0;
+  border-radius: 8px;
+  padding: 12px;
+  color: #172033;
+  background: #ffffff;
+  cursor: pointer;
+  text-align: left;
+}
+
+.chat-thread:hover,
+.chat-thread--active {
+  border-color: #9cb6f5;
+  background: #edf3ff;
+}
+
+.chat-thread small {
+  display: block;
+  margin-top: 4px;
+  color: #65718a;
+}
+
+.chat-messages {
+  display: grid;
+  max-height: 260px;
+  gap: 10px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.chat-message {
+  display: grid;
+  gap: 5px;
+  max-width: min(100%, 620px);
+  padding: 10px 12px;
+  border: 1px solid #dde4f0;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.chat-message--own {
+  justify-self: end;
+  border-color: #bdd0ff;
+  background: #edf3ff;
+}
+
+.chat-message__meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  color: #65718a;
+  font-size: 0.78rem;
+}
+
+.chat-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 10px;
+}
+
+.chat-form__input {
+  min-height: 76px;
+}
+
 .data-item--unread {
   border-color: #9cb6f5;
   background: #f6f9ff;
@@ -541,6 +654,7 @@ h3 {
 
   .content-grid,
   .content-grid--two,
+  .chat-layout,
   .section-header {
     grid-template-columns: 1fr;
   }
@@ -549,9 +663,11 @@ h3 {
   .topbar,
   .section-title-row,
   .data-item,
-  .item-actions {
+  .item-actions,
+  .chat-form {
     align-items: flex-start;
     flex-direction: column;
+    grid-template-columns: 1fr;
   }
 
   .form-row {

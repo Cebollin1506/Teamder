@@ -62,7 +62,7 @@
       <StatusMessage :message="historyError" type="error" />
 
       <div v-if="tutorings.length" class="data-list">
-        <article v-for="tutoring in tutorings" :key="tutoring.id" class="data-item">
+        <article v-for="tutoring in tutorings" :key="tutoring.id" class="data-item data-item--stacked">
           <div>
             <div class="item-heading">
               <h3>{{ tutoring.tema }}</h3>
@@ -77,6 +77,13 @@
           </div>
 
           <div class="item-actions">
+            <RouterLink
+              v-if="['confirmada', 'finalizada'].includes(normalizedStatus(tutoring.estado))"
+              class="link-button link-button--secondary"
+              :to="{ name: 'tutoring-chat', query: { tutoria_id: tutoring.id } }"
+            >
+              Abrir chat
+            </RouterLink>
             <label class="field field--compact">
               <span>Estado</span>
               <select
@@ -243,5 +250,9 @@ async function changeSchedule(id) {
   } catch (requestError) {
     error.value = requestError.userMessage || 'No se pudo actualizar el horario.'
   }
+}
+
+function normalizedStatus(estado) {
+  return ['finalizado', ''].includes(estado) ? 'finalizada' : estado
 }
 </script>

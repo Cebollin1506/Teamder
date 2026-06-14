@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { login as loginRequest, register as registerRequest } from '@/modules/auth/services/authService'
+import { getProfile } from '@/modules/users/services/userService'
 
 const TOKEN_KEY = 'teamder_token'
 const USER_KEY = 'teamder_user'
@@ -8,6 +9,7 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: localStorage.getItem(TOKEN_KEY),
     user: JSON.parse(localStorage.getItem(USER_KEY) || 'null'),
+    profileSynced: false,
     loading: false,
     error: null
   }),
@@ -20,8 +22,30 @@ export const useAuthStore = defineStore('auth', {
     persistSession(token, user) {
       this.token = token
       this.user = user
+      this.profileSynced = true
       localStorage.setItem(TOKEN_KEY, token)
       localStorage.setItem(USER_KEY, JSON.stringify(user))
+    },
+
+    persistUser(user) {
+      this.user = user
+      this.profileSynced = true
+      localStorage.setItem(USER_KEY, JSON.stringify(user))
+    },
+
+    async refreshProfile() {
+      if (!this.token || this.profileSynced) {
+        return this.user
+      }
+
+      try {
+        const { data } = await getProfile()
+        this.persistUser(data)
+        return data
+      } catch (error) {
+        this.logout()
+        throw error
+      }
     },
 
     async login(credentials) {
@@ -74,6 +98,7 @@ export const useAuthStore = defineStore('auth', {
     logout() {
       this.token = null
       this.user = null
+      this.profileSynced = false
       localStorage.removeItem(TOKEN_KEY)
       localStorage.removeItem(USER_KEY)
     }
