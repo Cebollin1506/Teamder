@@ -13,6 +13,8 @@ api.interceptors.request.use((config) => {
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
+    // Algunos hostings CGI eliminan Authorization antes de llegar a PHP.
+    config.headers['X-Teamder-Token'] = token
   }
 
   return config

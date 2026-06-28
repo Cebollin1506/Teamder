@@ -46,6 +46,9 @@ Endpoints usados:
 
 - `POST /register.php`
 - `POST /login.php`
+- `POST /forgot-password.php`
+- `POST /verify-otp.php`
+- `POST /reset-password.php`
 - `GET /users.php`
 - `GET /users.php?me=true`
 - `POST /tutoring_requests.php`
@@ -263,3 +266,17 @@ npm run dev      # servidor local
 npm run build    # build de produccion
 npm run preview  # previsualizar build
 ```
+
+## Sprint 5: recuperacion de acceso y seguridad
+
+1. Importa `database/2026_06_26_sprint_5_security.sql` despues de `database/teamder.sql`.
+2. Copia `backend-examples/api/` a `C:\xampp\htdocs\Teamder_Backend\api\` como en la instalacion base.
+3. En `backend-examples/` ejecuta `composer install` y copia tambien la carpeta `vendor` junto al backend desplegado.
+4. Copia `api/mail-config.example.php` como `api/mail-config.php` y configura las credenciales SMTP. Tambien puedes usar las variables `TEAMDER_SMTP_HOST`, `TEAMDER_SMTP_PORT`, `TEAMDER_SMTP_USERNAME`, `TEAMDER_SMTP_PASSWORD`, `TEAMDER_SMTP_ENCRYPTION` y `TEAMDER_SMTP_FROM_EMAIL`.
+5. Reinicia Apache y Vite.
+
+Para probar la recuperacion, abre `/auth/login`, selecciona **¿Olvidaste tu contraseña?**, solicita el codigo, verifica el OTP recibido y define una contrasena con 8 caracteres, mayuscula, minuscula y numero. El codigo vence en 10 minutos, se invalida al solicitar uno nuevo y queda inutilizable despues del cambio.
+
+Para probar el rate limiting, realiza cinco accesos fallidos con el mismo correo e IP. El intento siguiente respondera HTTP 429 con `Demasiados intentos. Intenta nuevamente más tarde.` durante 15 minutos. Un acceso correcto limpia los fallos y bloqueos de esa identidad. Los registros quedan en `login_attempts` y los bloqueos en `login_blocks`.
+
+La respuesta de solicitud de recuperacion es deliberadamente identica para correos registrados y no registrados. En produccion, configura HTTPS, credenciales SMTP mediante variables de entorno y una tarea periodica que elimine registros de intentos y tokens antiguos.

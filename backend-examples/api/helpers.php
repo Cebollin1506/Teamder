@@ -14,8 +14,22 @@ function json_response(array $data, int $status = 200): void
 
 function auth_user_id(): ?int
 {
-    $headers = getallheaders();
-    $authorization = $headers["Authorization"] ?? $headers["authorization"] ?? "";
+    // getallheaders() no esta disponible en todos los modos CGI/FastCGI
+    // utilizados por hostings compartidos como InfinityFree.
+    $headers = function_exists("getallheaders") ? getallheaders() : [];
+    $teamderToken = $headers["X-Teamder-Token"]
+        ?? $headers["x-teamder-token"]
+        ?? $_SERVER["HTTP_X_TEAMDER_TOKEN"]
+        ?? "";
+    $authorization = $headers["Authorization"]
+        ?? $headers["authorization"]
+        ?? $_SERVER["HTTP_AUTHORIZATION"]
+        ?? $_SERVER["REDIRECT_HTTP_AUTHORIZATION"]
+        ?? "";
+
+    if ($teamderToken !== "") {
+        $authorization = "Bearer " . trim($teamderToken);
+    }
 
     if (!str_starts_with($authorization, "Bearer ")) {
         return null;

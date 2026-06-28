@@ -4,6 +4,9 @@ import AuthLayout from '@/layouts/AuthLayout.vue'
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import LoginView from '@/modules/auth/views/LoginView.vue'
 import RegisterView from '@/modules/auth/views/RegisterView.vue'
+import ForgotPasswordView from '@/modules/auth/views/ForgotPasswordView.vue'
+import VerifyOtpView from '@/modules/auth/views/VerifyOtpView.vue'
+import ResetPasswordView from '@/modules/auth/views/ResetPasswordView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import ProfileView from '@/modules/users/views/ProfileView.vue'
 import UsersListView from '@/modules/users/views/UsersListView.vue'
@@ -47,7 +50,10 @@ const routes = [
     meta: { guestOnly: true },
     children: [
       { path: 'login', name: 'login', component: LoginView },
-      { path: 'registro', name: 'register', component: RegisterView }
+      { path: 'registro', name: 'register', component: RegisterView },
+      { path: 'recuperar', name: 'forgot-password', component: ForgotPasswordView },
+      { path: 'verificar-otp', name: 'verify-otp', component: VerifyOtpView },
+      { path: 'restablecer', name: 'reset-password', component: ResetPasswordView }
     ]
   }
 ]

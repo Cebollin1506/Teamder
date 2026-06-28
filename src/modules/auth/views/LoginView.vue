@@ -9,6 +9,10 @@
     <BaseInput v-model="form.email" label="Correo electronico" type="email" autocomplete="email" required />
     <BaseInput v-model="form.password" label="Contrasena" type="password" autocomplete="current-password" required />
 
+    <RouterLink class="auth-help-link" :to="{ name: 'forgot-password' }">
+      ¿Olvidaste tu contraseña?
+    </RouterLink>
+
     <StatusMessage :message="authStore.error" type="error" />
     <BaseButton :loading="authStore.loading" type="submit">Entrar</BaseButton>
 

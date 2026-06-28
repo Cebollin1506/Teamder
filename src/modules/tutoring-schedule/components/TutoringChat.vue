@@ -41,7 +41,7 @@
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import StatusMessage from '@/components/ui/StatusMessage.vue'
 import { useAuthStore } from '@/stores/authStore'
@@ -60,16 +60,12 @@ const draft = ref('')
 const error = ref('')
 const sending = ref(false)
 const chatOpen = ref(false)
-let refreshTimer = null
 
 const isOpen = computed(() => normalizedStatus(props.tutoring.estado) === 'confirmada' && chatOpen.value)
 
 onMounted(() => {
   loadMessages()
-  startPolling()
 })
-
-onBeforeUnmount(stopPolling)
 
 watch(
   () => props.tutoring.id,
@@ -83,7 +79,6 @@ watch(
   () => props.tutoring.estado,
   () => {
     loadMessages()
-    startPolling()
   }
 )
 
@@ -119,21 +114,6 @@ async function sendMessage() {
     error.value = requestError.userMessage || 'No se pudo enviar el mensaje.'
   } finally {
     sending.value = false
-  }
-}
-
-function startPolling() {
-  stopPolling()
-
-  if (normalizedStatus(props.tutoring.estado) === 'confirmada') {
-    refreshTimer = window.setInterval(loadMessages, 6000)
-  }
-}
-
-function stopPolling() {
-  if (refreshTimer) {
-    window.clearInterval(refreshTimer)
-    refreshTimer = null
   }
 }
 
